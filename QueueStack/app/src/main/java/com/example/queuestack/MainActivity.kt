@@ -1,120 +1,74 @@
 package com.example.queuestack
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
+import kotlinx.android.synthetic.main.activity_main.btnNextPage
+import kotlinx.android.synthetic.main.activity_main.btnSave
+import kotlinx.android.synthetic.main.activity_main.etName
+import kotlinx.android.synthetic.main.activity_main.etSurname
+import kotlinx.android.synthetic.main.activity_main.tvCount
 import java.util.*
 
+const val STUDENTS_LIST = "STUDENTS_LIST"
+
 class MainActivity : AppCompatActivity() {
+    private var count = 0
+    private val students = ArrayList<Student>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        btnSave.setOnClickListener {
+            var name = etName.text.toString()
+            var surname = etSurname.text.toString()
+            if(name.isNotBlank() && surname.isNotBlank()){
+                students.add(Student(name, surname))
+                incrementCount()
+                updateView()
+            }else{
+                if (name.isEmpty()){
+                    etName.error = "Name can't be empty!"
+                }
+                if (surname.isEmpty()){
+                    etSurname.error = "Surname can't be empty!"
+                }
+            }
+        }
+
+        btnNextPage.setOnClickListener {
+            var intent = Intent(this, ListActivity::class.java)
+            intent.putExtra(STUDENTS_LIST, students)
+            startActivity(intent)
+        }
+
+        etName.doAfterTextChanged {
+            etName.error = null
+        }
+
+        etSurname.doAfterTextChanged {
+            etSurname.error = null
+        }
+    }
+
+    private fun incrementCount() {
+        count++
+        tvCount.text = count.toString()
+    }
+
+    private fun fieldsNotEmpty(): Boolean {
+        return etName.text.toString().isNotBlank()
+            && etSurname.text.toString().isNotBlank()
+    }
+
+    private fun updateView(){
+        etSurname.text.clear()
+        etName.text.clear()
     }
 }
-
-fun main() {
-    var obj = MyStack()
-    obj.push(1)
-    obj.push(2)
-    obj.push(3)
-    var param_2 = obj.pop()
-    var param_3 = obj.top()
-    var param_4 = obj.pop()
-//    var param_5 = obj.pop()
-    var param_6 = obj.empty()
-}
-
-class MyStack() {
-
-    /** Initialize your data structure here. */
-    var queue: Queue<Int> = LinkedList()
-
-    /** Push element x onto stack. */
-    fun push(x: Int) {
-        queue.add(x)
-    }
-
-    /** Removes the element on top of the stack and returns that element. */
-    fun pop(): Int {
-        for (i in 1 until queue.size){
-            queue.add(queue.poll())
-        }
-
-        return queue.poll()
-    }
-
-    /** Get the top element. */
-    fun top(): Int {
-        for (i in 1 until queue.size){
-            queue.add(queue.poll())
-        }
-        var res = queue.peek()
-        queue.add(queue.poll())
-        return res
-    }
-
-    /** Returns whether the stack is empty. */
-    fun empty(): Boolean {
-        return queue.isEmpty()
-    }
-
-}
-
-
-
-class MyQueue() {
-
-    /** Initialize your data structure here. */
-    var stack1: Stack<Int> = Stack()
-    var stack2: Stack<Int> = Stack()
-
-
-    /** Push element x to the back of queue. */
-    fun push(x: Int) {
-        stack1.push(x)
-    }
-
-    /** Removes the element from in front of queue and returns that element. */
-    fun pop(): Int {
-        while(stack1.isNotEmpty()){
-            stack2.push(stack1.pop())
-        }
-
-        var res = stack2.pop()
-
-        while(stack2.isNotEmpty()){
-            stack1.push(stack2.pop())
-        }
-
-        return res
-    }
-
-    /** Get the front element. */
-    fun peek(): Int {
-        while(stack1.isNotEmpty()){
-            stack2.push(stack1.pop())
-        }
-
-        var res = stack2.peek()
-
-        while(stack2.isNotEmpty()){
-            stack1.push(stack2.pop())
-        }
-
-        return res
-    }
-
-    /** Returns whether the queue is empty. */
-    fun empty(): Boolean {
-        return stack1.isEmpty()
-    }
-
-}
-
-/**
- * Your MyQueue object will be instantiated and called as such:
- * var obj = MyQueue()
- * obj.push(x)
- * var param_2 = obj.pop()
- * var param_3 = obj.peek()
- * var param_4 = obj.empty()
- */
