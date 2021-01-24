@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import kotlinx.android.synthetic.main.activity_main.btnNextPage
@@ -29,9 +30,16 @@ class MainActivity : AppCompatActivity() {
             var name = etName.text.toString()
             var surname = etSurname.text.toString()
             if(name.isNotBlank() && surname.isNotBlank()){
-                students.add(Student(name, surname))
-                incrementCount()
+                val student = Student(name, surname)
+                if(!students.contains(student)){
+                    students.add(student)
+                    incrementCount()
+                }else{
+                    Toast.makeText(this, "Such user exists!", Toast.LENGTH_SHORT).show()
+                }
+
                 updateView()
+
             }else{
                 if (name.isEmpty()){
                     etName.error = "Name can't be empty!"
