@@ -27,9 +27,11 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         arguments?.let {
             student = it.getParcelable<Student>(ARG_PARAM1)
         }
+    }
 
-        if (student != null){
-//            idTv.text = student?.id.toString()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (student != null) {
+            idTv.text = student?.id.toString()
             nameTv.text = student?.name.toString()
             surnameTv.text = student?.name.toString()
         }
